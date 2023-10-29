@@ -21,14 +21,14 @@ set(HEADER_FILES
 
 # Specify the source files. Assuming they are in a 'src' directory
 set(SOURCE_FILES 
-    ${CMAKE_SOURCE_DIR}/src/cppwebs.cpp 
-    ${CMAKE_SOURCE_DIR}/src/mongoose.c)
+    src/cppwebs.cpp 
+    src/mongoose.c)
 
 # Create the library
 add_library(cppwebs STATIC ${SOURCE_FILES} ${HEADER_FILES})
 
 # Specify include directories for the library and anyone linking against it
-target_include_directories(cppwebs PUBLIC ${CMAKE_SOURCE_DIR}/include)
+target_include_directories(cppwebs PUBLIC include)
 
 # Add an executable for the sample
 add_executable(simple_example samples/simple.cpp)
