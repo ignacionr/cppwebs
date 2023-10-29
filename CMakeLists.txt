@@ -23,7 +23,7 @@ file(GLOB_RECURSE HEADER_FILES
 file(GLOB_RECURSE SOURCE_FILES ${CMAKE_SOURCE_DIR}/src/*.cpp ${CMAKE_SOURCE_DIR}/src/*.c)
 
 # Create the library
-add_library(cppwebs STATIC ${SOURCE_FILES} ${HEADER_FILES})
+add_library(cppwebs::cppwebs STATIC ${SOURCE_FILES} ${HEADER_FILES})
 
 # Specify include directories for the library and anyone linking against it
 target_include_directories(cppwebs PUBLIC ${CMAKE_SOURCE_DIR}/include)
