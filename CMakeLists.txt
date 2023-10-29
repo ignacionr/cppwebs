@@ -26,7 +26,7 @@ file(GLOB_RECURSE SOURCE_FILES ${CMAKE_SOURCE_DIR}/src/*.cpp ${CMAKE_SOURCE_DIR}
 add_library(cppwebs::cppwebs STATIC ${SOURCE_FILES} ${HEADER_FILES})
 
 # Specify include directories for the library and anyone linking against it
-target_include_directories(cppwebs PUBLIC ${CMAKE_SOURCE_DIR}/include)
+target_include_directories(cppwebs::cppwebs PUBLIC ${CMAKE_SOURCE_DIR}/include)
 
 # Add an executable for the sample
 add_executable(simple_example samples/simple.cpp)
