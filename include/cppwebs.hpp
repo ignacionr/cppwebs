@@ -1,10 +1,11 @@
 #pragma once
-#include "mongoose.h"
 #include <string>
 #include <string_view>
+#include <filesystem>
 #include <functional>
 #include <map>
 #include <chrono>
+#include "mongoose.h"
 
 namespace ignacionr
 {
@@ -16,8 +17,9 @@ namespace ignacionr
         cppwebs(const char *url);
         ~cppwebs();
 
-        void Start(std::chrono::duration<int> how_long = std::chrono::minutes(5));
-        void AddController(std::string const &host, const std::string &path, Controller controller);
+        void start(std::chrono::duration<int> how_long = std::chrono::minutes(5));
+        void add_controller(std::string const &host, const std::string &path, Controller controller);
+        void add_directory(std::string const &host, std::string const &path, std::filesystem::path const &directory);
 
     private:
         static void handle_page(struct mg_connection *nc, struct mg_http_message * hm, auto it);

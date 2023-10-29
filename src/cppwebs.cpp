@@ -14,7 +14,7 @@ namespace ignacionr
         mg_mgr_free(&mgr);
     }
 
-    void cppwebs::Start(std::chrono::duration<int> how_long)
+    void cppwebs::start(std::chrono::duration<int> how_long)
     {
         if (mg_http_listen(&mgr, url_.c_str(), ev_handler, this) == nullptr)
         {
@@ -30,9 +30,33 @@ namespace ignacionr
 
         puts("Stopping server...\n");
     }
-    void cppwebs::AddController(std::string const &host, const std::string &path, Controller controller)
+    void cppwebs::add_controller(std::string const &host, const std::string &path, Controller controller)
     {
         controllers_[path][host] = controller;
+    }
+
+    struct directory_server {
+        directory_server(std::filesystem::path const &base_dir): base_dir_{base_dir} {
+            opts_.root_dir = base_dir_.data();
+        }
+        directory_server(const directory_server& src) {
+            base_dir_ = src.base_dir_;
+            opts_.root_dir = base_dir_.data();
+        }
+        directory_server(directory_server &&src) {
+            base_dir_ = std::move(src.base_dir_);
+            opts_.root_dir = base_dir_.data();
+        }
+        void operator()(mg_connection *nc, mg_http_message *hm) {
+            mg_http_serve_dir(nc, hm, &opts_);
+        }
+        mg_http_serve_opts opts_{};
+        std::string base_dir_;
+    };
+
+    void cppwebs::add_directory(std::string const &host, std::string const &path, std::filesystem::path const &directory)
+    {
+        add_controller(host, path, directory_server(directory));
     }
 
     void cppwebs::handle_page(struct mg_connection *nc, struct mg_http_message *hm, auto it)
