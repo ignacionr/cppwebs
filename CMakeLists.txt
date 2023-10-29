@@ -17,7 +17,7 @@ endif()
 # Specify the header files. Include both .h and .hpp files
 set(HEADER_FILES 
      include/mongoose.h
-     include/mongoose.hpp)
+     include/cppwebs.hpp)
 
 # Specify the source files. Assuming they are in a 'src' directory
 set(SOURCE_FILES 
