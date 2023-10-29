@@ -15,18 +15,20 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 endif()
 
 # Specify the header files. Include both .h and .hpp files
-file(GLOB_RECURSE HEADER_FILES 
-     ${CMAKE_SOURCE_DIR}/include/*.h
-     ${CMAKE_SOURCE_DIR}/include/*.hpp)
+set(HEADER_FILES 
+     include/mongoose.h
+     include/cppwebs.hpp)
 
 # Specify the source files. Assuming they are in a 'src' directory
-file(GLOB_RECURSE SOURCE_FILES ${CMAKE_SOURCE_DIR}/src/*.cpp ${CMAKE_SOURCE_DIR}/src/*.c)
+set(SOURCE_FILES 
+    src/cppwebs.cpp 
+    src/mongoose.c)
 
 # Create the library
 add_library(cppwebs STATIC ${SOURCE_FILES} ${HEADER_FILES})
 
 # Specify include directories for the library and anyone linking against it
-target_include_directories(cppwebs PUBLIC ${CMAKE_SOURCE_DIR}/include)
+target_include_directories(cppwebs PUBLIC include)
 
 # Add an executable for the sample
 add_executable(simple_example samples/simple.cpp)
