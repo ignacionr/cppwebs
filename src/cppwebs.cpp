@@ -30,24 +30,30 @@ namespace ignacionr
 
         puts("Stopping server...\n");
     }
+
     void cppwebs::add_controller(std::string const &host, const std::string &path, Controller controller)
     {
         controllers_[path][host] = controller;
     }
 
-    struct directory_server {
-        directory_server(std::filesystem::path const &base_dir): base_dir_{base_dir} {
+    struct directory_server
+    {
+        directory_server(std::filesystem::path const &base_dir) : base_dir_{base_dir}
+        {
             opts_.root_dir = base_dir_.data();
         }
-        directory_server(const directory_server& src) {
+        directory_server(const directory_server &src)
+        {
             base_dir_ = src.base_dir_;
             opts_.root_dir = base_dir_.data();
         }
-        directory_server(directory_server &&src) {
+        directory_server(directory_server &&src)
+        {
             base_dir_ = std::move(src.base_dir_);
             opts_.root_dir = base_dir_.data();
         }
-        void operator()(mg_connection *nc, mg_http_message *hm) {
+        void operator()(mg_connection *nc, mg_http_message *hm)
+        {
             mg_http_serve_dir(nc, hm, &opts_);
         }
         mg_http_serve_opts opts_{};
@@ -59,8 +65,9 @@ namespace ignacionr
         add_controller(host, path, directory_server(directory));
     }
 
-    void cppwebs::handle_page(struct mg_connection *nc, struct mg_http_message *hm, auto it)
+    bool cppwebs::handle_page(struct mg_connection *nc, struct mg_http_message *hm, auto it)
     {
+        bool handled{false};
         auto host_hdr = mg_http_get_header(hm, "host");
         if (host_hdr && host_hdr->ptr)
         {
@@ -68,17 +75,16 @@ namespace ignacionr
             {
                 auto host = std::string{host_hdr->ptr, host_hdr->len};
                 auto it_host = it->second.find(host);
+
                 if (it_host == it->second.end())
                 {
                     it_host = it->second.find("*");
                 }
+
                 if (it_host != it->second.end())
                 {
+                    handled = true;
                     it_host->second(nc, hm);
-                }
-                else
-                {
-                    mg_http_reply(nc, 404, "Content-Type: text/plain\r\n", "Not Found (try a different host)");
                 }
             }
             catch (std::exception &ex)
@@ -86,6 +92,7 @@ namespace ignacionr
                 mg_http_reply(nc, 500, "Content-Type: text/plain\r\n", "%s", ex.what());
             }
         }
+        return handled;
     }
 
     void cppwebs::ev_handler(struct mg_connection *nc, int ev, void *ev_data, void *fn_data)
@@ -97,15 +104,21 @@ namespace ignacionr
             std::string_view uri(hm->uri.ptr, hm->uri.len);
 
             auto it = pThis->controllers_.find(std::string{uri});
+            bool handled{false};
             if (it != pThis->controllers_.end())
             {
-                handle_page(nc, hm, it);
+                handled = handle_page(nc, hm, it);
             }
-            else if (it = pThis->controllers_.find("*"); it != pThis->controllers_.end())
+            
+            if (!handled)
             {
-                handle_page(nc, hm, it);
+                if (it = pThis->controllers_.find("*"); it != pThis->controllers_.end())
+                {
+                    handled = handle_page(nc, hm, it);
+                }
             }
-            else
+
+            if (!handled)
             {
                 mg_http_reply(nc, 404, "Content-Type: text/plain\r\n", "Not Found");
             }

@@ -22,7 +22,7 @@ namespace ignacionr
         void add_directory(std::string const &host, std::string const &path, std::filesystem::path const &directory);
 
     private:
-        static void handle_page(struct mg_connection *nc, struct mg_http_message * hm, auto it);
+        static bool handle_page(struct mg_connection *nc, struct mg_http_message * hm, auto it);
         static void ev_handler(struct mg_connection *nc, int ev, void *ev_data, void *fn_data);
 
         struct mg_mgr mgr;
