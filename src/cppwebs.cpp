@@ -23,9 +23,9 @@ namespace ignacionr
         printf("Starting web server on %s\n", url_.c_str());
 
         auto const start = std::chrono::system_clock::now();
-        while (std::chrono::system_clock::now() - start < how_long)
+        while (std::chrono::system_clock::now() - start < how_long && running_)
         {
-            mg_mgr_poll(&mgr, 1000);
+            mg_mgr_poll(&mgr, 3000);
         }
 
         puts("Stopping server...\n");

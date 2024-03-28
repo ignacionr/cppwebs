@@ -18,6 +18,7 @@ namespace ignacionr
         ~cppwebs();
 
         void start(std::chrono::duration<int> how_long = std::chrono::minutes(5));
+        void stop() { running_ = false; }
         void add_controller(std::string const &host, const std::string &path, Controller controller);
         void add_directory(std::string const &host, std::string const &path, std::filesystem::path const &directory);
 
@@ -28,5 +29,6 @@ namespace ignacionr
         struct mg_mgr mgr;
         std::string url_;
         std::map<std::string, std::map<std::string, Controller>> controllers_;
+        bool running_{true};
     };
 }
