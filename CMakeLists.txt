@@ -32,6 +32,8 @@ target_include_directories(cppwebs PUBLIC include)
 
 # Add an executable for the sample
 add_executable(simple_example samples/simple.cpp)
+add_executable(ws_example samples/wsecho.cpp)
 
 # Link the executable to your library
 target_link_libraries(simple_example cppwebs)
+target_link_libraries(ws_example cppwebs)
