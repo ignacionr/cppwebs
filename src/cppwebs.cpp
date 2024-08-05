@@ -96,8 +96,8 @@ namespace ignacionr
                         {
                             std::cerr << "Handling the request with a ControllerWS\n";
                             c(nc, hm, [&nc, &hm, this] (WebSocketHandler ws_handler){
-                                mg_ws_upgrade(nc, hm, nullptr);
                                 ws_handlers_[nc] = ws_handler;
+                                mg_ws_upgrade(nc, hm, nullptr);
                             });
                         }
                         else
